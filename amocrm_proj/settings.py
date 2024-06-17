@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -82,11 +82,11 @@ WSGI_APPLICATION = 'amocrm_proj.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'company_gvlr',
-        'HOST': 'dpg-cpnu87eehbks738dr2u0-a',
-        'PORT': 5432,
-        'PASSWORD': 'vQebbOGyhJpQ8Q3NJJTXH3u7NLZeVe0A',
-        'USER': 'company_gvlr_user',
+        'NAME': os.getenv('DB_NAME', 'company_gvlr'),
+        'USER': os.getenv('DB_USER', 'company_gvlr_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'vQebbOGyhJpQ8Q3NJJTXH3u7NLZeVe0A'),
+        'HOST': os.getenv('DB_HOST', 'dpg-cpnu87eehbks738dr2u0-a'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
