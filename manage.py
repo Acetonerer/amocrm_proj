@@ -2,6 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from dotenv import load_dotenv
 
 
 def main():
@@ -18,13 +19,18 @@ def main():
         ) from exc
 
     # Load environment variables from .env file
-    from dotenv import load_dotenv
     load_dotenv()
 
-    # Apply migrations
-    execute_from_command_line(['manage.py', 'makemigrations', 'migrate'])
+    # Handle command line arguments
+    args = sys.argv
 
-    execute_from_command_line(sys.argv)
+    # Check if the command is either 'makemigrations' or 'migrate'
+    if len(args) > 1 and (args[1] == 'makemigrations' or args[1] == 'migrate'):
+        # Execute the specific command
+        execute_from_command_line(args)
+    else:
+        # Default behavior: execute from command line with original arguments
+        execute_from_command_line(sys.argv)
 
 
 if __name__ == '__main__':
