@@ -1,7 +1,6 @@
 from django.urls import path
-from .views import UserListCreateView, UserDetailView
+from .views import RemoveUserFromSubgroupView
 
 urlpatterns = [
-    path('users/', UserListCreateView.as_view(), name='user-list-create'),
-    path('users/<int:pk>/', UserDetailView.as_view(), name='user-detail'),
+    path('groups/<int:group_id>/users/<int:user_id>/', RemoveUserFromSubgroupView.as_view(), name='del_user'),
 ]

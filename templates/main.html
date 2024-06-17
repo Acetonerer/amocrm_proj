@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Структура компании</title>
+</head>
+<body>
+
+    <div class="test"></div>
+
+    <script>
+
+        const url_main = 'http://127.0.0.1:8000';
+        const projectId = 1337;
+        getProject(projectId);
+
+        async function createProject() {
+            const url = url_main + '/projects/';
+            const data = {
+                name: 'Project_1',
+                amo_id: projectId
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Ошибка при создании проекта');
+                }
+
+                console.log('Проект успешно создан');
+            } catch (error) {
+                console.error('Ошибка:', error.message);
+            }
+        }
+
+        // Функция для выполнения GET запроса на просмотр проекта
+        async function getProject(id) {
+            const url = url_main + `/projects/${id}`;
+
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        console.log('Проект не найден, создаем новый...');
+                        await createProject(); // Пытаемся создать проект
+                        await getProject(id); // Повторно выполняем GET запрос
+                    } else {
+                        throw new Error('Ошибка при выполнении GET запроса');
+                    }
+                } else {
+                    const projectData = await response.json();
+                    console.log('Данные проекта:', projectData);
+                }
+            } catch (error) {
+                console.error('Ошибка:', error.message);
+            }
+        }
+
+    </script>
+
+</body>
+</html>
