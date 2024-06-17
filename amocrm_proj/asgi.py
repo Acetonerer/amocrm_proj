@@ -9,7 +9,11 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/asgi/
 
 import os
 
+import dotenv
 from django.core.asgi import get_asgi_application
+
+# Load environment variables from .env file
+dotenv.read_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'amocrm_proj.settings')
 

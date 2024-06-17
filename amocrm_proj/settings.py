@@ -13,6 +13,8 @@ import os
 from pathlib import Path
 
 import dj_database_url
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,7 +81,7 @@ WSGI_APPLICATION = 'amocrm_proj.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
 
 # Password validation
