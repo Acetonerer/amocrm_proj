@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-r@&$+4bsy)f!w8d!sj9t$!zh!nd#w!6%cibz0d(g#-)=$-u)-3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['amocrm-proj-1.onrender.com']
+ALLOWED_HOSTS = ['amocrm-proj.onrender.com']
 
 # Application definition
 
