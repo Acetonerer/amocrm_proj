@@ -3,9 +3,10 @@
 import os
 import sys
 import dotenv
+from dotenv import load_dotenv
 
 # Load environment variables from .env file
-dotenv.read_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
 
 def main():
