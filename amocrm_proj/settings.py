@@ -82,11 +82,11 @@ WSGI_APPLICATION = 'amocrm_proj.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'company',
-        'HOST': 'localhost',
+        'NAME': 'company_gvlr',
+        'HOST': 'dpg-cpnu87eehbks738dr2u0-a',
         'PORT': 5432,
-        'PASSWORD': 'tankist230101',
-        'USER': 'postgres',
+        'PASSWORD': 'vQebbOGyhJpQ8Q3NJJTXH3u7NLZeVe0A',
+        'USER': 'company_gvlr_user',
     }
 }
 
