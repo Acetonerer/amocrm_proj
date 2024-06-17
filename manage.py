@@ -1,13 +1,11 @@
-#!/usr/bin/env python
-"""Django's command-line utility for administrative tasks."""
 import os
 import sys
-import dotenv
+
+from django.core.management import execute_from_command_line
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
-
 
 def main():
     """Run administrative tasks."""
@@ -20,7 +18,10 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
-    execute_from_command_line(sys.argv)
+
+    # Use PORT environment variable if set, otherwise default to 8000
+    port = os.environ.get('PORT', '8000')
+    execute_from_command_line([sys.argv[0], 'runserver', '0.0.0.0:' + port])
 
 
 if __name__ == '__main__':
