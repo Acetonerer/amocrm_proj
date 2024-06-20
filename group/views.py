@@ -73,6 +73,21 @@ class GroupDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    def put(self, request, group_id):
+        try:
+            group = Group.objects.get(id=group_id)
+        except Group.DoesNotExist:
+            return Response({"error": "Group not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        new_name = request.data.get('name')
+        if not new_name:
+            return Response({"error": "New name is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        group.name = new_name
+        group.save()
+
+        return Response({"success": True, "updatedGroup": GroupSerializer(group).data}, status=status.HTTP_200_OK)
+
 
 class GroupMembersView(APIView):
     def post(self, request, group_id):

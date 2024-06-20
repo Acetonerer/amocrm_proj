@@ -3,6 +3,7 @@ from .views import GroupListCreateView, GroupDetailView, GroupMembersView, Group
 
 urlpatterns = [
     path('groups/', GroupListCreateView.as_view(), name='group-list-create'),
+    path('group/<int:group_id>/edit/', GroupDetailView.as_view(), name='group_edit'),
     path('groups/<int:group_id>/', GroupDetailView.as_view(), name='group-detail'),
     path('groups/<int:group_id>/members/', GroupMembersView.as_view(), name='group-members'),
     path('groups/<int:group_id>/leader/', GroupLeaderView.as_view(), name='group-leader'),
