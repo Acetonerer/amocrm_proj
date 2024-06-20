@@ -14,7 +14,7 @@ class GroupListCreateView(APIView):
         data = request.data
         amo_id = data.get('amo_id')
         group_name = data.get('name')
-        parent_group_id = data.get('parent_group')
+        parent_group = data.get('parent_group')
 
         if not amo_id or not group_name:
             return Response({"error": "amo_id and group name are required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -24,8 +24,8 @@ class GroupListCreateView(APIView):
 
             # Если указан parent_group, проверяем его наличие
             parent_group = None
-            if parent_group_id:
-                parent_group = Group.objects.get(id=parent_group_id)
+            if parent_group:
+                parent_group = Group.objects.get(id=parent_group)
 
             # Создаем группу
             group = Group.objects.create(name=group_name, project=project, parent_group=parent_group)
