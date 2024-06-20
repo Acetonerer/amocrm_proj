@@ -57,20 +57,22 @@ class ProjectDetailView(APIView):
     def delete(self, request, pk):
         try:
             project = Project.objects.get(pk=pk)
+            main_group = project.main_group
 
-            # Удаляем все группы, подгруппы и членов, связанные с проектом
-            groups = Group.objects.filter(project=project)
-            for group in groups:
-                # Удаляем всех членов группы
-                group.members.all().delete()
-                # Удаляем все подгруппы
-                subgroups = Group.objects.filter(parent_group=group)
-                for subgroup in subgroups:
-                    subgroup.members.all().delete()
-                    subgroup.delete()
-                group.delete()
+            if main_group:
+                # Удаляем все подгруппы и их членов, связанные с main_group
+                def delete_group_and_subgroups(group):
+                    # Удаляем всех членов группы
+                    group.members.all().delete()
+                    # Рекурсивно удаляем все подгруппы
+                    subgroups = Group.objects.filter(parent_group=group)
+                    for subgroup in subgroups:
+                        delete_group_and_subgroups(subgroup)
+                    group.delete()
 
-            return Response({"success": True, "message": "All related data have been deleted, but the project remains."},
+                delete_group_and_subgroups(main_group)
+
+            return Response({"success": True, "message": "All related groups and their members have been deleted, but the project remains."},
                             status=status.HTTP_200_OK)
 
         except Project.DoesNotExist:
