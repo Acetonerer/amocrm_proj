@@ -54,6 +54,27 @@ class ProjectDetailView(APIView):
         serializer = ProjectSerializer(project)
         return Response(serializer.data)
 
+    def delete(self, request, pk):
+        try:
+            project = Project.objects.get(pk=pk)
+
+            # Удаляем все группы, подгруппы и членов, связанные с проектом
+            groups = Group.objects.filter(project=project)
+            for group in groups:
+                group.members.all().delete()  # Удаляем всех членов группы
+                group.subgroups.all().delete()  # Удаляем все подгруппы
+            groups.delete()  # Удаляем все группы
+
+            project.delete()  # Удаляем сам проект
+
+            return Response({"success": True, "message": "Project and all related data have been deleted."},
+                            status=status.HTTP_200_OK)
+
+        except Project.DoesNotExist:
+            return Response({"error": "Project not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class MainView(TemplateView):
     template_name = 'main.html'
