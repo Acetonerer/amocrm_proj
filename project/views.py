@@ -65,8 +65,6 @@ class ProjectDetailView(APIView):
                 group.subgroups.all().delete()  # Удаляем все подгруппы
             groups.delete()  # Удаляем все группы
 
-            project.delete()  # Удаляем сам проект
-
             return Response({"success": True, "message": "Project and all related data have been deleted."},
                             status=status.HTTP_200_OK)
 
