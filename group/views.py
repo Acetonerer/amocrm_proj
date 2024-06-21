@@ -25,7 +25,7 @@ class GroupListCreateView(APIView):
             # Если указан parent_group, проверяем его наличие
             parent_group = None
             if parent_group_id:
-                parent_group = Group.objects.get(id=parent_group_id)
+                parent_group = Group.objects.get(id=parent_group_id, project=project)
 
             # Создаем группу
             group = Group.objects.create(name=group_name, project=project, parent_group=parent_group)
@@ -45,7 +45,7 @@ class GroupListCreateView(APIView):
         except Project.DoesNotExist:
             return Response({"error": "Project with given amo_id does not exist"}, status=status.HTTP_400_BAD_REQUEST)
         except Group.DoesNotExist:
-            return Response({"error": "Parent group does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Parent group does not exist in the given project"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             # Обрабатываем возможные исключения и возвращаем ошибку сервера
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
