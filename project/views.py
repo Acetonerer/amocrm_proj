@@ -69,7 +69,6 @@ class ProjectDetailView(APIView):
                     for subgroup in subgroups:
                         delete_group_and_subgroups(subgroup)
                     group.delete()
-                    project.delete()
 
                 delete_group_and_subgroups(main_group)
 
