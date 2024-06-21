@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from group.serializers import GroupSerializer
-from users.serializers import UserSerializer
 from project.models import Project
 
 

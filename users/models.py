@@ -7,7 +7,7 @@ class User(models.Model):
     position = models.CharField(max_length=100)
     group = models.ForeignKey('group.Group', related_name='members', on_delete=models.CASCADE)
     is_leader = models.BooleanField(default=False)
-    # responsibilities = models.JSONField(default=list)
+    responsibilities = models.JSONField(default=list)
 
     def __str__(self):
         return self.name

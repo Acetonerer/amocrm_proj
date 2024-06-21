@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from users.serializers import UserSerializer
 from group.models import Group
+from users.serializers import UserSerializer
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -13,8 +13,7 @@ class GroupSerializer(serializers.ModelSerializer):
 
     def get_subgroups(self, obj):
         subgroups = obj.subgroups.all()
-        serializer = self.__class__(subgroups, many=True)
-        return serializer.data
+        return GroupSerializer(subgroups, many=True).data
 
 
 class SubgroupSerializer(serializers.ModelSerializer):
