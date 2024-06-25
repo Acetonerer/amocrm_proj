@@ -50,6 +50,9 @@ class GroupListCreateView(APIView):
             # Обрабатываем возможные исключения и возвращаем ошибку сервера
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    def put(self):
+        pass
+
 
 class GroupDetailView(APIView):
 

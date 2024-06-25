@@ -9,7 +9,7 @@ class GroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ['id', 'name', 'parent_group', 'members', 'subgroups']
+        fields = ['id', 'name', 'parent_group', 'members', 'subgroups', 'result']
 
     def get_subgroups(self, obj):
         subgroups = obj.subgroups.all()
