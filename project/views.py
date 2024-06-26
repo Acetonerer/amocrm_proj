@@ -54,6 +54,21 @@ class ProjectDetailView(APIView):
         serializer = ProjectSerializer(project)
         return Response(serializer.data)
 
+    def put(self, request, pk):
+        try:
+            project = Project.objects.get(pk=pk)
+        except Group.DoesNotExist:
+            return Response({"error": "Project not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        new_name = request.data.get('name')
+        if not new_name:
+            return Response({"error": "New name is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        project.name = new_name
+        project.save()
+
+        return Response({"success": True, "updatedGroup": ProjectSerializer(project).data}, status=status.HTTP_200_OK)
+
     def delete(self, request, pk):
         try:
             project = Project.objects.get(pk=pk)
@@ -72,7 +87,8 @@ class ProjectDetailView(APIView):
 
                 delete_group_and_subgroups(main_group)
 
-            return Response({"success": True, "message": "All related groups and their members have been deleted, but the project remains."},
+            return Response({"success": True, "message": "All related groups and their members have been deleted,"
+                                                         " but the project remains."},
                             status=status.HTTP_200_OK)
 
         except Project.DoesNotExist:

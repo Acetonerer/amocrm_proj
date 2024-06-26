@@ -50,8 +50,20 @@ class GroupListCreateView(APIView):
             # Обрабатываем возможные исключения и возвращаем ошибку сервера
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def put(self):
-        pass
+    def put(self, request, group_id):
+        try:
+            group = Group.objects.get(id=group_id)
+        except Group.DoesNotExist:
+            return Response({"error": "Group not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        new_result = request.data.get('result')
+        if not new_result:
+            return Response({"error": "New result is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        group.result = new_result
+        group.save()
+
+        return Response({"success": True, "updatedGroup": GroupSerializer(group).data}, status=status.HTTP_200_OK)
 
 
 class GroupDetailView(APIView):
