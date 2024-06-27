@@ -62,6 +62,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     'https://tematechnics.amocrm.ru',
     'https://another-allowed-origin.com',
+    'https://amocrm-proj.onrender.com',
 ]
 
 # Опциональные дополнительные настройки
