@@ -10,6 +10,7 @@ from .serializers import GroupSerializer
 from users.models import User
 from users.serializers import UserSerializer
 from django.middleware.csrf import get_token
+import requests
 
 
 class CsrfTokenView(APIView):
@@ -17,6 +18,45 @@ class CsrfTokenView(APIView):
     def get(self, request):
         csrf_token = get_token(request)
         return JsonResponse({'csrfToken': csrf_token})
+
+
+def get_csrf_token(session):
+    response = session.get('https://amocrm-proj.onrender.com/get-csrf-token/')
+    return response.json().get('csrfToken')
+
+
+def with_csrf_protection(view_func):
+    def wrapper(self, request, *args, **kwargs):
+        try:
+            response = view_func(self, request, *args, **kwargs)
+            if response.status_code == 403:
+                # Получаем новый CSRF-токен и повторяем запрос
+                session = requests.Session()
+                csrf_token = get_csrf_token(session)
+                request.META['HTTP_X_CSRFTOKEN'] = csrf_token
+                response = view_func(self, request, *args, **kwargs)
+            return response
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return wrapper
+
+
+class GroupItogPutView(APIView):
+    @with_csrf_protection
+    def put(self, request, group_id):
+        try:
+            group = Group.objects.get(id=group_id)
+        except Group.DoesNotExist:
+            return Response({"error": "Group not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        new_itog = request.data.get('itog')
+        if not new_itog:
+            return Response({"error": "New result is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        group.itog = new_itog
+        group.save()
+
+        return Response({"success": True, "updatedGroup": GroupSerializer(group).data}, status=status.HTTP_200_OK)
 
 
 class GroupListCreateView(APIView):
@@ -60,23 +100,6 @@ class GroupListCreateView(APIView):
         except Exception as e:
             # Обрабатываем возможные исключения и возвращаем ошибку сервера
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-class GroupItogPutView(APIView):
-    def put(self, request, group_id):
-        try:
-            group = Group.objects.get(id=group_id)
-        except Group.DoesNotExist:
-            return Response({"error": "Group not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        new_itog = request.data.get('itog')
-        if not new_itog:
-            return Response({"error": "New result is required"}, status=status.HTTP_400_BAD_REQUEST)
-
-        group.itog = new_itog
-        group.save()
-
-        return Response({"success": True, "updatedGroup": GroupSerializer(group).data}, status=status.HTTP_200_OK)
 
 
 class GroupDetailView(APIView):
