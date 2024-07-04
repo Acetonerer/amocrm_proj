@@ -7,6 +7,8 @@ from .serializers import GroupSerializer
 from users.models import User
 from users.serializers import UserSerializer
 from django.middleware.csrf import get_token
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 
 class GroupListCreateView(APIView):
@@ -52,6 +54,7 @@ class GroupListCreateView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class GroupItogPutView(APIView):
 
     def put(self, request, group_id):
