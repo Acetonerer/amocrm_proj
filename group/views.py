@@ -6,6 +6,7 @@ from .models import Group
 from .serializers import GroupSerializer
 from users.models import User
 from users.serializers import UserSerializer
+from django.middleware.csrf import get_token
 
 
 class GroupListCreateView(APIView):
@@ -51,6 +52,8 @@ class GroupListCreateView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def put(self, request, group_id):
+        csrf_token = get_token(request)
+        print("CSRF Token:", csrf_token)  # Debugging: Check the CSRF token
         try:
             group = Group.objects.get(id=group_id)
         except Group.DoesNotExist:
