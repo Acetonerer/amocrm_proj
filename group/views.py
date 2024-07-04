@@ -158,10 +158,14 @@ class GroupLeaderView(APIView):
         except Group.DoesNotExist:
             return Response({"error": "Group not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        try:
-            leader = User.objects.get(user_id=leader_id)
-        except User.DoesNotExist:
+        # Здесь используем filter вместо get, чтобы избежать MultipleObjectsReturned
+        leaders = User.objects.filter(user_id=leader_id)
+        if leaders.count() > 1:
+            return Response({"error": "Multiple users found with the same user_id"}, status=status.HTTP_400_BAD_REQUEST)
+        elif leaders.count() == 0:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        leader = leaders.first()
 
         if leader not in group.members.all():
             return Response({"error": "User is not a member of this group"}, status=status.HTTP_400_BAD_REQUEST)
