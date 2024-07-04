@@ -56,11 +56,11 @@ class GroupListCreateView(APIView):
         except Group.DoesNotExist:
             return Response({"error": "Group not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        new_result = request.data.get('result')
-        if not new_result:
+        new_itog = request.data.get('itog')
+        if not new_itog:
             return Response({"error": "New result is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        group.result = new_result
+        group.itog = new_itog
         group.save()
 
         return Response({"success": True, "updatedGroup": GroupSerializer(group).data}, status=status.HTTP_200_OK)
