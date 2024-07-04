@@ -51,6 +51,9 @@ class GroupListCreateView(APIView):
             # Обрабатываем возможные исключения и возвращаем ошибку сервера
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+class GroupItogPutView(APIView):
+
     def put(self, request, group_id):
         csrf_token = get_token(request)
         print("CSRF Token:", csrf_token)  # Debugging: Check the CSRF token
