@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import GroupListCreateView, GroupDetailView, GroupMembersView, GroupLeaderView, GroupItogPutView
+from .views import GroupListCreateView, GroupDetailView, GroupMembersView, GroupLeaderView, CsrfTokenView, GroupItogPutView
 
 urlpatterns = [
-    path('get-csrf-token/', GroupItogPutView.as_view(), name='get_csrf_token'),
+    path('get-csrf-token/', CsrfTokenView(), name='get_csrf_token'),
     path('groups/', GroupListCreateView.as_view(), name='group-list-create'), # создание группы
     path('group/<int:group_id>/edit/', GroupDetailView.as_view(), name='group_edit'), # редактирование имени группы
     path('group/<int:group_id>/edit/itog/', GroupItogPutView.as_view, name='group_itog_edit'), # редактирование результата группы

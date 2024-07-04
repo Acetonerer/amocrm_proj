@@ -1,3 +1,6 @@
+from django.http import JsonResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -6,8 +9,14 @@ from .models import Group
 from .serializers import GroupSerializer
 from users.models import User
 from users.serializers import UserSerializer
-from django.http import JsonResponse
-import requests
+from django.middleware.csrf import get_token
+
+
+class CsrfTokenView(APIView):
+    @method_decorator(ensure_csrf_cookie)
+    def get(self, request):
+        csrf_token = get_token(request)
+        return JsonResponse({'csrfToken': csrf_token})
 
 
 class GroupListCreateView(APIView):
@@ -54,36 +63,20 @@ class GroupListCreateView(APIView):
 
 
 class GroupItogPutView(APIView):
-    base_url = "https://amocrm-proj.onrender.com"
-
-    def get_csrf_token(self, session):
-        response = session.get(f"{self.base_url}/get-csrf-token/")
-        csrf_token = response.json().get('csrfToken')
-        return csrf_token
-
     def put(self, request, group_id):
-        session = requests.Session()
-        csrf_token = self.get_csrf_token(session)
-        session.headers.update({'X-CSRFToken': csrf_token})
+        try:
+            group = Group.objects.get(id=group_id)
+        except Group.DoesNotExist:
+            return Response({"error": "Group not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        response = self.update_itog(session, group_id, request.data.get('itog'))
-
-        if response.status_code == 403:
-            csrf_token = self.get_csrf_token(session)
-            session.headers.update({'X-CSRFToken': csrf_token})
-            response = self.update_itog(session, group_id, request.data.get('itog'))
-
-        return JsonResponse(response.json(), status=response.status_code)
-
-    def update_itog(self, session, group_id, new_itog):
+        new_itog = request.data.get('itog')
         if not new_itog:
-            return JsonResponse({"error": "New result is required"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "New result is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        url = f"{self.base_url}/group/{group_id}/edit/itog/"
-        data = {"itog": new_itog}
-        response = session.put(url, json=data)
+        group.itog = new_itog
+        group.save()
 
-        return response
+        return Response({"success": True, "updatedGroup": GroupSerializer(group).data}, status=status.HTTP_200_OK)
 
 
 class GroupDetailView(APIView):
