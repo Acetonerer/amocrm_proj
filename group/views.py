@@ -7,7 +7,7 @@ from .serializers import GroupSerializer
 from users.models import User
 from users.serializers import UserSerializer
 from django.middleware.csrf import get_token
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 
 
@@ -54,9 +54,9 @@ class GroupListCreateView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class GroupItogPutView(APIView):
 
+    @ensure_csrf_cookie
     def put(self, request, group_id):
         csrf_token = get_token(request)
         print("CSRF Token:", csrf_token)  # Debugging: Check the CSRF token

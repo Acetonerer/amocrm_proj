@@ -96,6 +96,9 @@ CORS_ALLOW_HEADERS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
+CSRF_COOKIE_SECURE = True  # Убедитесь, что используется HTTPS
+SESSION_COOKIE_SECURE = True
+
 ROOT_URLCONF = 'amocrm_proj.urls'
 
 TEMPLATES = [
