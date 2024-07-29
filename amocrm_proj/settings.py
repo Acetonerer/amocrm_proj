@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-r@&$+4bsy)f!w8d!sj9t$!zh!nd#w!6%cibz0d(g#-)=$-u)-3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['amocrm-proj.onrender.com']
+ALLOWED_HOSTS = ['amocrm-proj.onrender.com', '127.0.0.1']
 
 # Application definition
 
@@ -122,8 +122,19 @@ WSGI_APPLICATION = 'amocrm_proj.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+# }
+
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'company',
+        'PORT': '5432',
+        'HOST': 'localhost',
+        'USER': 'postgres',
+        'PASSWORD': 'tankist230101',
+    }
 }
 
 # Password validation
